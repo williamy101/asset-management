@@ -1,7 +1,7 @@
 # Asset Management API
+## *Note: Untuk melihat rancangan database di branch main*
 
 Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis peran, dan manajemen pengguna.
-## *Untuk melihat rancangan database di branch main*
 
 ## Fitur
 
