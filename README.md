@@ -1,5 +1,5 @@
 ## Asset Management
-### *Code di branch master*
+### *Untuk backend code di branch master*
 ### 1. **Tabel asset_categories**
 Tabel ini digunakan untuk menyimpan kategori aset. Setiap kategori seperti "Perlengkapan IT", "Furnitur", dan "Kendaraan" memiliki category_id yang unik. Selain itu, tabel ini juga mencatat kapan kategori tersebut dibuat dan terakhir diubah menggunakan created_at dan updated_at.
 
