@@ -20,6 +20,7 @@ Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berb
 - **MySQL**: Database
 - **JWT**: JSON Web Tokens untuk autentikasi
 
+## Cara menjalankan project
 ```bash
 git clone https://github.com/williamy101/asset-management.git
 cd asset-management
