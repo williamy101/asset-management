@@ -11,7 +11,7 @@ type Maintenances struct {
 	StatusID      int       `gorm:"not null" json:"statusId"`
 	CreatedAt     time.Time `gorm:"autoCreateTime" json:"createdAt"`
 	UpdatedAt     time.Time `gorm:"autoUpdateTime" json:"updatedAt"`
-	Assets        Assets    `gorm:"foreignKey:AssetID" json:"assets"`
-	Users         Users     `gorm:"foreignKey:UserID" json:"users"`
-	Statuses      Statuses  `gorm:"foreignKey:StatusID" json:"statuses"`
+	Assets        Assets    `gorm:"foreignKey:AssetID;references:AssetID" json:"assets"`
+	Users         Users     `gorm:"foreignKey:UserID;references:UserID" json:"users"`
+	Statuses      Statuses  `gorm:"foreignKey:StatusID;references:StatusID" json:"statuses"`
 }

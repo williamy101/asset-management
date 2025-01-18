@@ -10,5 +10,5 @@ type Users struct {
 	RoleID    int       `gorm:"not null" json:"roleId"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"createdAt"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updatedAt"`
-	Roles     Roles     `gorm:"foreignKey:RoleID" json:"roles"`
+	Roles     Roles     `gorm:"foreignKey:RoleID;references:RoleID" json:"roles"`
 }

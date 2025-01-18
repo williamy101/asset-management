@@ -14,6 +14,7 @@ type UserService interface { //interface service user
 	Login(email, password string) (string, error)
 	GetUserByEmail(email string) (*entity.Users, error)
 	GetUserByID(id int) (*entity.Users, error)
+	GetAllUsers() ([]entity.Users, error)
 }
 
 type userService struct { // struct user terhubung dengan repo user dan role
@@ -89,4 +90,8 @@ func (s *userService) Login(email, password string) (string, error) {
 	}
 
 	return token, nil
+}
+
+func (s *userService) GetAllUsers() ([]entity.Users, error) {
+	return s.userRepo.FindAll()
 }

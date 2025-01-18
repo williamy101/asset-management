@@ -57,8 +57,9 @@ func (ctrl *UserController) Login(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, util.NewFailedResponse(err.Error()))
 		return
 	}
+	c.Header("Authorization", "Bearer "+token)
 
-	c.JSON(http.StatusOK, util.NewSuccessResponse("Login successful", token))
+	c.JSON(http.StatusOK, util.NewSuccessResponse("Login successful", nil))
 }
 
 func (ctrl *UserController) GetUserByID(c *gin.Context) {
@@ -87,4 +88,14 @@ func (ctrl *UserController) GetUserByEmail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, util.NewSuccessResponse("User fetched successfully", user))
+}
+
+func (ctrl *UserController) GetAllUsers(c *gin.Context) {
+	users, err := ctrl.userService.GetAllUsers()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to fetch users"))
+		return
+	}
+
+	c.JSON(http.StatusOK, util.NewSuccessResponse("Users fetched successfully", users))
 }

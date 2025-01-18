@@ -22,8 +22,8 @@ func (ctrl *AssetController) CreateAsset(c *gin.Context) {
 		AssetName       string `json:"assetName" binding:"required"`
 		CategoryID      int    `json:"categoryID" binding:"required"`
 		StatusID        int    `json:"statusId" binding:"required"`
-		LastMaintenance string `json:"lastMaintenance" binding:"required"`
-		NextMaintenance string `json:"nextMaintenance" binding:"required"` // sementara logic yang terhubung ke maintenance belum diimplement
+		LastMaintenance string `json:"lastMaintenance"`
+		NextMaintenance string `json:"nextMaintenance"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {

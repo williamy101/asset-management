@@ -10,6 +10,7 @@ type UserRepository interface {
 	FindByID(userID int) (*entity.Users, error)
 	FindByEmail(email string) (*entity.Users, error)
 	Create(user *entity.Users) error
+	FindAll() ([]entity.Users, error)
 }
 
 type userRepository struct {
@@ -22,7 +23,7 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 
 func (r *userRepository) FindByID(userID int) (*entity.Users, error) {
 	var user entity.Users
-	err := r.db.Where("user_id = ?", userID).First(&user).Error
+	err := r.db.Preload("Roles").Where("user_id = ?", userID).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +32,7 @@ func (r *userRepository) FindByID(userID int) (*entity.Users, error) {
 
 func (r *userRepository) FindByEmail(email string) (*entity.Users, error) {
 	var user entity.Users
-	err := r.db.Where("email = ?", email).First(&user).Error
+	err := r.db.Preload("Roles").Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
@@ -40,4 +41,13 @@ func (r *userRepository) FindByEmail(email string) (*entity.Users, error) {
 
 func (r *userRepository) Create(user *entity.Users) error {
 	return r.db.Create(user).Error
+}
+
+func (r *userRepository) FindAll() ([]entity.Users, error) {
+	var users []entity.Users
+	err := r.db.Preload("Roles").Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }
