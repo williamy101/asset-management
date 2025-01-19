@@ -1,6 +1,6 @@
 # Asset Management API
 
-## Preview ERD
+## Preview ERD (Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)
 ![image](https://github.com/user-attachments/assets/a5243dbf-b45c-49ad-a926-0ce5697b3ab2)
 *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
 
