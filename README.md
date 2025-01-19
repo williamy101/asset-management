@@ -2,7 +2,8 @@
 
 ## Preview ERD
 ![image](https://github.com/user-attachments/assets/a5243dbf-b45c-49ad-a926-0ce5697b3ab2)
-## *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
+*Note: Untuk melihat rancangan database lebih jelasnya di branch main*
+
 
 Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis peran, dan manajemen pengguna.
 
