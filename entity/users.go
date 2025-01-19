@@ -12,3 +12,9 @@ type Users struct {
 	UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updatedAt"`
 	Roles     Roles     `gorm:"foreignKey:RoleID;references:RoleID" json:"roles"`
 }
+
+type UserDTO struct {
+	UserID int    `json:"userId"`
+	Name   string `json:"name"`
+	RoleID int    `json:"roleId"`
+}

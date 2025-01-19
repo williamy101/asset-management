@@ -11,6 +11,7 @@ type UserRepository interface {
 	FindByEmail(email string) (*entity.Users, error)
 	Create(user *entity.Users) error
 	FindAll() ([]entity.Users, error)
+	Update(user *entity.Users) error
 }
 
 type userRepository struct {
@@ -50,4 +51,12 @@ func (r *userRepository) FindAll() ([]entity.Users, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func (r *userRepository) Update(user *entity.Users) error {
+	result := r.db.Save(user)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
 }

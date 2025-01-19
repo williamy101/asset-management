@@ -23,7 +23,6 @@ func (ctrl *UserController) Register(c *gin.Context) {
 		Name     string `json:"name" binding:"required"`
 		Email    string `json:"email" binding:"required,email"`
 		Password string `json:"password" binding:"required,min=6"`
-		RoleID   int    `json:"roleId" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -31,7 +30,7 @@ func (ctrl *UserController) Register(c *gin.Context) {
 		return
 	}
 
-	err := ctrl.userService.RegisterUser(req.Name, req.Email, req.Password, req.RoleID)
+	err := ctrl.userService.RegisterUser(req.Name, req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusConflict, util.NewFailedResponse(err.Error()))
 		return
@@ -69,13 +68,13 @@ func (ctrl *UserController) GetUserByID(c *gin.Context) {
 		return
 	}
 
-	user, err := ctrl.userService.GetUserByID(id)
+	userDTO, err := ctrl.userService.GetUserByID(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, util.NewFailedResponse("User not found"))
 		return
 	}
 
-	c.JSON(http.StatusOK, util.NewSuccessResponse("User fetched successfully", user))
+	c.JSON(http.StatusOK, util.NewSuccessResponse("User fetched successfully", userDTO))
 }
 
 func (ctrl *UserController) GetUserByEmail(c *gin.Context) {
@@ -91,11 +90,31 @@ func (ctrl *UserController) GetUserByEmail(c *gin.Context) {
 }
 
 func (ctrl *UserController) GetAllUsers(c *gin.Context) {
-	users, err := ctrl.userService.GetAllUsers()
+	usersDTO, err := ctrl.userService.GetAllUsers()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to fetch users"))
 		return
 	}
 
-	c.JSON(http.StatusOK, util.NewSuccessResponse("Users fetched successfully", users))
+	c.JSON(http.StatusOK, util.NewSuccessResponse("Users fetched successfully", usersDTO))
+}
+
+func (ctrl *UserController) UpdateUserRole(c *gin.Context) {
+	var input struct {
+		UserID int `json:"userId" binding:"required"`
+		RoleID int `json:"roleId" binding:"required"`
+	}
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid input"))
+		return
+	}
+
+	err := ctrl.userService.UpdateUserRole(input.UserID, input.RoleID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse(err.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, util.NewSuccessResponse("User role updated successfully", nil))
 }

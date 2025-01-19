@@ -10,7 +10,7 @@ import (
 )
 
 type MaintenanceService interface {
-	CreateMaintenance(assetID int, userID int, description string, cost float64, statusID int) error
+	CreateMaintenance(assetID int, userID int, description string, cost float64) error
 	GetAllMaintenances() ([]entity.Maintenances, error)
 	GetMaintenanceByID(maintenanceID int) (*entity.Maintenances, error)
 	UpdateMaintenance(maintenanceID int, description string, statusID int) error
@@ -32,14 +32,10 @@ func NewMaintenanceService(maintenanceRepo repository.MaintenanceRepository, ass
 	}
 }
 
-func (s *maintenanceService) CreateMaintenance(assetID int, userID int, description string, cost float64, statusID int) error {
+func (s *maintenanceService) CreateMaintenance(assetID int, userID int, description string, cost float64) error {
 
 	if cost < 0 {
 		return errors.New("cost cannot be negative")
-	}
-
-	if statusID != 3 && statusID != 4 && statusID != 5 {
-		return errors.New("Invalid status ID. Only 3 ('In Maintenance'), 4 ('Scheduled'), or 5 ('Completed') are allowed for maintenance status")
 	}
 
 	asset, err := s.assetRepo.FindByID(assetID)
@@ -60,7 +56,7 @@ func (s *maintenanceService) CreateMaintenance(assetID int, userID int, descript
 		UserID:      userID,
 		Description: description,
 		Cost:        cost,
-		StatusID:    4, // StatusID 4 adalah "Scheduled"
+		StatusID:    4, // StatusID 4 adalah "Scheduled" untuk default
 	}
 
 	err = s.maintenanceRepo.Create(maintenance)

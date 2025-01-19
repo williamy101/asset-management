@@ -7,14 +7,16 @@ import (
 	"go-asset-management/util"
 
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type UserService interface { //interface service user
-	RegisterUser(name, email, password string, roleId int) error
+	RegisterUser(name, email, password string) error
 	Login(email, password string) (string, error)
 	GetUserByEmail(email string) (*entity.Users, error)
-	GetUserByID(id int) (*entity.Users, error)
-	GetAllUsers() ([]entity.Users, error)
+	GetUserByID(id int) (*entity.UserDTO, error)
+	GetAllUsers() ([]entity.UserDTO, error)
+	UpdateUserRole(userID int, newRoleID int) error
 }
 
 type userService struct { // struct user terhubung dengan repo user dan role
@@ -29,17 +31,12 @@ func NewUserService(userRepo repository.UserRepository, roleRepo repository.Role
 	}
 }
 
-func (s *userService) RegisterUser(name, email, password string, roleId int) error {
+func (s *userService) RegisterUser(name, email, password string) error {
+
 	// validasi jika email sudah ada
 	_, err := s.userRepo.FindByEmail(email)
 	if err == nil {
 		return errors.New("email already exists")
-	}
-
-	// periksa adanya role
-	role, err := s.roleRepo.FindByID(roleId)
-	if err != nil || role == nil {
-		return errors.New("invalid role ID")
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
@@ -51,7 +48,7 @@ func (s *userService) RegisterUser(name, email, password string, roleId int) err
 		Name:     name,
 		Email:    email,
 		Password: string(hashedPassword),
-		RoleID:   roleId,
+		RoleID:   2,
 	}
 
 	err = s.userRepo.Create(user)
@@ -66,8 +63,20 @@ func (s *userService) GetUserByEmail(email string) (*entity.Users, error) {
 	return s.userRepo.FindByEmail(email)
 }
 
-func (s *userService) GetUserByID(id int) (*entity.Users, error) {
-	return s.userRepo.FindByID(id)
+func (s *userService) GetUserByID(id int) (*entity.UserDTO, error) {
+	user, err := s.userRepo.FindByID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	// Mapping ke UserDTO
+	userDTO := &entity.UserDTO{
+		UserID: user.UserID,
+		Name:   user.Name,
+		RoleID: user.RoleID,
+	}
+
+	return userDTO, nil
 }
 
 func (s *userService) Login(email, password string) (string, error) {
@@ -92,6 +101,40 @@ func (s *userService) Login(email, password string) (string, error) {
 	return token, nil
 }
 
-func (s *userService) GetAllUsers() ([]entity.Users, error) {
-	return s.userRepo.FindAll()
+func (s *userService) GetAllUsers() ([]entity.UserDTO, error) {
+	users, err := s.userRepo.FindAll()
+	if err != nil {
+		return nil, err
+	}
+
+	// Mapping ke UserDTO
+	var userDTOs []entity.UserDTO
+	for _, user := range users {
+		userDTOs = append(userDTOs, entity.UserDTO{
+			UserID: user.UserID,
+			Name:   user.Name,
+			RoleID: user.RoleID,
+		})
+	}
+
+	return userDTOs, nil
+}
+
+func (s *userService) UpdateUserRole(userID int, newRoleID int) error {
+
+	user, err := s.userRepo.FindByID(userID)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("user not found")
+		}
+		return err
+	}
+
+	role, err := s.roleRepo.FindByID(newRoleID)
+	if err != nil || role == nil {
+		return errors.New("invalid role ID")
+	}
+
+	user.RoleID = newRoleID
+	return s.userRepo.Update(user)
 }

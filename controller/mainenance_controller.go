@@ -25,7 +25,7 @@ func (ctrl *MaintenanceController) CreateMaintenance(c *gin.Context) {
 		UserID      int     `json:"userId" binding:"required"`
 		Description string  `json:"description" binding:"required"`
 		Cost        float64 `json:"cost" binding:"required"`
-		StatusID    int     `json:"statusId" binding:"required"`
+		StatusID    int     `json:"statusId"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -33,7 +33,7 @@ func (ctrl *MaintenanceController) CreateMaintenance(c *gin.Context) {
 		return
 	}
 
-	err := ctrl.maintenanceService.CreateMaintenance(input.AssetID, input.UserID, input.Description, input.Cost, input.StatusID)
+	err := ctrl.maintenanceService.CreateMaintenance(input.AssetID, input.UserID, input.Description, input.Cost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to create maintenance"))
 		return

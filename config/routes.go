@@ -15,11 +15,12 @@ func SetupRouter(router *gin.Engine, roleController *controller.RoleController, 
 		userRouter.POST("/login", userController.Login)
 	}
 
-	adminUserRouter := router.Group("/users/get")
+	adminUserRouter := router.Group("/users/admin")
 	adminUserRouter.Use(middleware.AuthMiddleware(1)) // get user cuma bisa diakses admin
 	{
 		adminUserRouter.GET("/", userController.GetAllUsers)
 		adminUserRouter.GET("/:id", userController.GetUserByID)
+		adminUserRouter.PUT("/role", userController.UpdateUserRole)
 	}
 
 	roleRouter := router.Group("/roles")
