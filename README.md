@@ -6,7 +6,7 @@
 (Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)
 
 ## Slide Presentasi 
-![image](https://github.com/user-attachments/assets/876e6272-ddb8-4e9a-b5dd-ab4a1c88d037)
+## ![image](https://github.com/user-attachments/assets/876e6272-ddb8-4e9a-b5dd-ab4a1c88d037)
 (Link: https://www.canva.com/design/DAGcmM3nHpE/RlvXGsFwEORdt432r6Bd3A/edit?utm_content=DAGcmM3nHpE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 
