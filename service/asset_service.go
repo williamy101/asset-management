@@ -67,7 +67,7 @@ func (s *assetService) GetAssetByID(assetID int) (*entity.Assets, error) {
 }
 
 func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int, statusID int, lastMaintenance, nextMaintenance string) error {
-	// Check if the asset exists
+	// Check apakah aset ada
 	asset, err := s.assetRepo.FindByID(assetID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -76,13 +76,11 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int
 		return err
 	}
 
-	// Update only if the field is provided
 	if assetName != "" {
 		asset.AssetName = assetName
 	}
 
 	if categoryID > 0 {
-		// Validate categoryID exists
 		_, err = s.assetCategoryRepo.FindByID(categoryID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -94,7 +92,7 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int
 	}
 
 	if statusID > 0 {
-		// Validate statusID
+		// Validasi statusID
 		validStatuses := map[int]bool{1: true, 2: true, 3: true, 4: true, 5: true}
 		if !validStatuses[statusID] {
 			return errors.New("invalid status ID")
@@ -102,7 +100,7 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int
 		asset.StatusID = statusID
 	}
 
-	// Parse and update maintenance dates only if provided
+	// Parse date
 	if lastMaintenance != "" {
 		parsedLastMaintenance, err := util.ParseDate(lastMaintenance)
 		if err != nil {
@@ -119,7 +117,6 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int
 		asset.NextMaintenance = parsedNextMaintenance
 	}
 
-	// Save updated asset
 	return s.assetRepo.Update(asset)
 }
 
