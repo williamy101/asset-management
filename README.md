@@ -5,7 +5,7 @@
 *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
 
 
- ### Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis peran, dan manajemen pengguna.
+ ### Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis role, dan manajemen pengguna.
 
 ## Fitur
 
