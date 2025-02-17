@@ -9,7 +9,7 @@
 
 ## Preview ERD 
 ![image](https://github.com/user-attachments/assets/a98a8631-191a-477c-adb1-9b6673eee1a6)
-*Note: Untuk melihat rancangan database lebih jelasnya di branch main*
+> *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
 (Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)
 
 ## Slide Presentasi 
