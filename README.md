@@ -4,6 +4,7 @@
  - Request pinjam aset (user create request pinjam aset, admin bisa approve atau reject)
  - Tabel penyimpanan aset yang dipinjam
  - Request maintenance (request dibuat oleh user, admin bisa approve atau reject, create maintenance manual tetap ada untuk maintenance rutin)
+ 
    _Selanjutnya akan dilakukan testing dan dokumentasi fitur baru, integrasi project ke docker, setelah itu deployment ke cloud hosting_
 
 ## Preview ERD 
