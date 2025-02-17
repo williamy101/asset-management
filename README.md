@@ -1,6 +1,6 @@
 # Asset Management API
 
-**_Terdapat fitur transaksi baru yang belum dilakukan testing yaitu_**:
+***Terdapat fitur transaksi baru yang belum dilakukan testing yaitu***:
  - Request pinjam aset (user create request pinjam aset, admin bisa approve atau reject)
  - Tabel penyimpanan aset yang dipinjam
  - Request maintenance (request dibuat oleh user, admin bisa approve atau reject, create maintenance manual tetap ada untuk maintenance rutin)
