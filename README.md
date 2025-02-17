@@ -1,7 +1,12 @@
 # Asset Management API
 
+* Terdapat fitur transaksi baru yang belum dilakukan testing yaitu:
+ - Request pinjam aset (user create request pinjam aset, admin bisa approve atau reject)
+ - Tabel penyimpanan aset yang dipinjam
+ - Request maintenance (request dibuat oleh user, admin bisa approve atau reject, create maintenance manual tetap ada untuk maintenance rutin)
+
 ## Preview ERD 
-![image](https://github.com/user-attachments/assets/a5243dbf-b45c-49ad-a926-0ce5697b3ab2)
+![image](https://github.com/user-attachments/assets/b9682602-4ff7-4fc6-a542-49834e7bf793)
 *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
 (Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)
 
