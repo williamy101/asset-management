@@ -10,10 +10,10 @@ import (
 )
 
 type AssetService interface {
-	CreateAsset(assetName string, categoryID int, statusID int, lastMaintenance, nextMaintenance string) error
+	CreateAsset(assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error
 	GetAllAssets() ([]entity.Assets, error)
 	GetAssetByID(assetID int) (*entity.Assets, error)
-	UpdateAsset(assetID int, assetName string, categoryID int, statusID int, lastMaintenance, nextMaintenance string) error
+	UpdateAsset(assetID int, assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error
 	DeleteAsset(assetID int) error
 }
 
@@ -28,24 +28,31 @@ func NewAssetService(assetRepo repository.AssetRepository, assetCategoryRepo rep
 
 }
 
-func (s *assetService) CreateAsset(assetName string, categoryID int, statusID int, lastMaintenance, nextMaintenance string) error {
+func (s *assetService) CreateAsset(assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error {
 	if assetName == "" {
 		return errors.New("asset name cannot be empty")
 	}
 
 	// validasi status
-	validStatuses := map[int]bool{1: true, 2: true, 3: true, 4: true, 5: true} // cek status manual
+	validStatuses := map[int]bool{1: true, 2: true, 3: true}
+
 	if !validStatuses[statusID] {
 		return errors.New("invalid status ID")
 	}
 
+	if userID != nil && statusID != 2 {
+		return errors.New("user can only be assigned when asset is 'In Use'")
+	}
+
 	// validasi kategori
-	_, err := s.assetCategoryRepo.FindByID(categoryID)
-	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.New("category does not exist")
+	if categoryID != nil {
+		_, err := s.assetCategoryRepo.FindByID(*categoryID)
+		if err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				return errors.New("category does not exist")
+			}
+			return err
 		}
-		return err
 	}
 
 	asset := &entity.Assets{
@@ -66,7 +73,7 @@ func (s *assetService) GetAssetByID(assetID int) (*entity.Assets, error) {
 	return s.assetRepo.FindByID(assetID)
 }
 
-func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int, statusID int, lastMaintenance, nextMaintenance string) error {
+func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error {
 	// Check apakah aset ada
 	asset, err := s.assetRepo.FindByID(assetID)
 	if err != nil {
@@ -80,8 +87,8 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int
 		asset.AssetName = assetName
 	}
 
-	if categoryID > 0 {
-		_, err = s.assetCategoryRepo.FindByID(categoryID)
+	if categoryID != nil {
+		_, err = s.assetCategoryRepo.FindByID(*categoryID)
 		if err != nil {
 			if errors.Is(err, gorm.ErrRecordNotFound) {
 				return errors.New("category does not exist")
@@ -91,13 +98,24 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID int
 		asset.CategoryID = categoryID
 	}
 
-	if statusID > 0 {
-		// Validasi statusID
-		validStatuses := map[int]bool{1: true, 2: true, 3: true, 4: true, 5: true}
-		if !validStatuses[statusID] {
-			return errors.New("invalid status ID")
+	validStatuses := map[int]bool{1: true, 2: true, 3: true, 13: true}
+
+	if !validStatuses[statusID] {
+		return errors.New("invalid status ID")
+	}
+	asset.StatusID = statusID
+
+	if statusID == 13 {
+		return errors.New("asset status cannot be manually set to 'Borrowed'")
+	}
+
+	if userID != nil {
+		if statusID != 2 {
+			return errors.New("user can only be assigned when asset is 'In Use'")
 		}
-		asset.StatusID = statusID
+		asset.UserID = userID
+	} else if statusID == 1 {
+		asset.UserID = nil
 	}
 
 	// Parse date

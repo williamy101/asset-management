@@ -7,7 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(router *gin.Engine, roleController *controller.RoleController, userController *controller.UserController, assetController *controller.AssetController, assetCategoryController *controller.AssetCategoryController, statusController *controller.StatusController, maintenanceController *controller.MaintenanceController) {
+func SetupRouter(
+	router *gin.Engine,
+	roleController *controller.RoleController,
+	userController *controller.UserController,
+	assetController *controller.AssetController,
+	assetCategoryController *controller.AssetCategoryController,
+	statusController *controller.StatusController,
+	maintenanceController *controller.MaintenanceController,
+	maintenanceRequestController *controller.MaintenanceRequestController,
+	borrowRequestController *controller.BorrowAssetRequestController,
+	borrowedAssetController *controller.BorrowedAssetController,
+) {
 
 	userRouter := router.Group("/users")
 	{
@@ -16,7 +27,7 @@ func SetupRouter(router *gin.Engine, roleController *controller.RoleController, 
 	}
 
 	adminUserRouter := router.Group("/users/admin")
-	adminUserRouter.Use(middleware.AuthMiddleware(1)) // get user cuma bisa diakses admin
+	adminUserRouter.Use(middleware.AuthMiddleware(1))
 	{
 		adminUserRouter.GET("/", userController.GetAllUsers)
 		adminUserRouter.GET("/:id", userController.GetUserByID)
@@ -41,7 +52,7 @@ func SetupRouter(router *gin.Engine, roleController *controller.RoleController, 
 		statusRouter.DELETE("/:id", statusController.Delete)
 	}
 
-	userStatusRouter := router.Group("/statuses/user", middleware.AuthMiddleware(2))
+	userStatusRouter := router.Group("/statuses/user", middleware.AuthMiddleware(2, 3))
 	{
 		userStatusRouter.GET("/", statusController.GetAll)
 		userStatusRouter.GET("/:id", statusController.GetByID)
@@ -68,7 +79,7 @@ func SetupRouter(router *gin.Engine, roleController *controller.RoleController, 
 	}
 
 	userAssetRouter := router.Group("/assets/get")
-	userAssetRouter.Use(middleware.AuthMiddleware(2)) // getter aset untuk user
+	userAssetRouter.Use(middleware.AuthMiddleware(2, 3))
 	{
 		userAssetRouter.GET("/", assetController.GetAllAssets)
 		userAssetRouter.GET("/:id", assetController.GetAssetByID)
@@ -84,13 +95,47 @@ func SetupRouter(router *gin.Engine, roleController *controller.RoleController, 
 		adminMaintenanceRouter.GET("/total-cost/:asset_id", maintenanceController.GetTotalCostByAssetID)
 	}
 
-	userMaintenanceRouter := router.Group("/maintenances/user", middleware.AuthMiddleware(2))
+	technicianMaintenanceRouter := router.Group("/maintenances/technician", middleware.AuthMiddleware(2))
 	{
-		userMaintenanceRouter.GET("/", maintenanceController.GetMaintenancesByUserID)
+		technicianMaintenanceRouter.PUT("/:id", maintenanceController.UpdateMaintenance)
 	}
 
-	commonMaintenanceRouter := router.Group("/maintenances/update", middleware.AuthMiddleware(1, 2))
+	userMaintenanceRouter := router.Group("/maintenances/user", middleware.AuthMiddleware(2, 3))
 	{
-		commonMaintenanceRouter.PUT("/:id", maintenanceController.UpdateMaintenance)
+		userMaintenanceRouter.GET("/", maintenanceController.GetMaintenancesByWorkerID)
+	}
+
+	maintenanceRequestRouter := router.Group("/maintenance-requests")
+	{
+		maintenanceRequestRouter.Use(middleware.AuthMiddleware(3))
+		maintenanceRequestRouter.POST("/", maintenanceRequestController.CreateMaintenanceRequest)
+	}
+
+	adminMaintenanceRequestRouter := router.Group("/maintenance-requests/admin")
+	adminMaintenanceRequestRouter.Use(middleware.AuthMiddleware(1))
+	{
+		adminMaintenanceRequestRouter.PUT("/:id/approve", maintenanceRequestController.ApproveMaintenanceRequest)
+		adminMaintenanceRequestRouter.PUT("/:id/reject", maintenanceRequestController.RejectMaintenanceRequest)
+	}
+
+	borrowRequestRouter := router.Group("/borrow-requests")
+	borrowRequestRouter.Use(middleware.AuthMiddleware(3))
+	{
+		borrowRequestRouter.POST("/", borrowRequestController.CreateBorrowRequest)
+	}
+
+	adminBorrowRequestRouter := router.Group("/borrow-requests/admin")
+	adminBorrowRequestRouter.Use(middleware.AuthMiddleware(1))
+	{
+		adminBorrowRequestRouter.PUT("/:id/approve", borrowRequestController.ApproveBorrowRequest)
+		adminBorrowRequestRouter.PUT("/:id/reject", borrowRequestController.RejectBorrowRequest)
+	}
+
+	borrowedAssetRouter := router.Group("/borrowed-assets")
+	borrowedAssetRouter.Use(middleware.AuthMiddleware(3))
+	{
+		borrowedAssetRouter.GET("/", borrowedAssetController.GetAllBorrowedAssets)
+		borrowedAssetRouter.GET("/:id", borrowedAssetController.GetBorrowedAssetByID)
+		borrowedAssetRouter.PUT("/:id/return", borrowedAssetController.UpdateReturnDate)
 	}
 }

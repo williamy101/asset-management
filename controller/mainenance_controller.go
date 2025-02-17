@@ -19,13 +19,13 @@ func NewMaintenanceController(maintenanceService service.MaintenanceService) *Ma
 	return &MaintenanceController{maintenanceService: maintenanceService}
 }
 
+// **Create Maintenance**
 func (ctrl *MaintenanceController) CreateMaintenance(c *gin.Context) {
 	var input struct {
-		AssetID     int     `json:"assetId" binding:"required"`
-		UserID      int     `json:"userId" binding:"required"`
+		RequestID   int     `json:"requestId" binding:"required"`
+		Worker      int     `json:"worker" binding:"required"`
 		Description string  `json:"description" binding:"required"`
 		Cost        float64 `json:"cost" binding:"required"`
-		StatusID    int     `json:"statusId"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -33,8 +33,12 @@ func (ctrl *MaintenanceController) CreateMaintenance(c *gin.Context) {
 		return
 	}
 
-	err := ctrl.maintenanceService.CreateMaintenance(input.AssetID, input.UserID, input.Description, input.Cost)
+	err := ctrl.maintenanceService.CreateMaintenance(input.RequestID, input.Worker, input.Description, input.Cost)
 	if err != nil {
+		if err.Error() == "this asset is already under maintenance, complete it first before scheduling a new one" {
+			c.JSON(http.StatusBadRequest, util.NewFailedResponse("This asset already has an active maintenance. Complete it first before scheduling a new one."))
+			return
+		}
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to create maintenance"))
 		return
 	}
@@ -42,6 +46,7 @@ func (ctrl *MaintenanceController) CreateMaintenance(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance Created Successfully", nil))
 }
 
+// **Get All Maintenances**
 func (ctrl *MaintenanceController) GetAllMaintenances(c *gin.Context) {
 	maintenances, err := ctrl.maintenanceService.GetAllMaintenances()
 	if err != nil {
@@ -51,6 +56,7 @@ func (ctrl *MaintenanceController) GetAllMaintenances(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenances fetched successfully", maintenances))
 }
 
+// **Get Maintenance By ID**
 func (ctrl *MaintenanceController) GetMaintenanceByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -71,6 +77,7 @@ func (ctrl *MaintenanceController) GetMaintenanceByID(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance fetched successfully", maintenance))
 }
 
+// **Update Maintenance**
 func (ctrl *MaintenanceController) UpdateMaintenance(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -90,6 +97,10 @@ func (ctrl *MaintenanceController) UpdateMaintenance(c *gin.Context) {
 
 	err = ctrl.maintenanceService.UpdateMaintenance(id, input.Description, input.StatusID)
 	if err != nil {
+		if err.Error() == "invalid status ID, must be 3 (In Maintenance), 4 (Scheduled), or 5 (Completed)" {
+			c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid status ID"))
+			return
+		}
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to update maintenance"))
 		return
 	}
@@ -97,6 +108,7 @@ func (ctrl *MaintenanceController) UpdateMaintenance(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance updated successfully", nil))
 }
 
+// **Delete Maintenance**
 func (ctrl *MaintenanceController) DeleteMaintenance(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -119,6 +131,7 @@ func (ctrl *MaintenanceController) DeleteMaintenance(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance deleted successfully", nil))
 }
 
+// **Get Total Maintenance Cost**
 func (ctrl *MaintenanceController) GetTotalCost(c *gin.Context) {
 	totalCost, err := ctrl.maintenanceService.GetTotalCost()
 	if err != nil {
@@ -129,6 +142,7 @@ func (ctrl *MaintenanceController) GetTotalCost(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Total cost calculated successfully", gin.H{"total_cost": totalCost}))
 }
 
+// **Get Total Cost by Asset ID**
 func (ctrl *MaintenanceController) GetTotalCostByAssetID(c *gin.Context) {
 	assetID, err := strconv.Atoi(c.Param("asset_id"))
 	if err != nil {
@@ -145,14 +159,15 @@ func (ctrl *MaintenanceController) GetTotalCostByAssetID(c *gin.Context) {
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Total cost calculated successfully", gin.H{"total_cost": totalCost}))
 }
 
-func (ctrl *MaintenanceController) GetMaintenancesByUserID(c *gin.Context) {
-	userID, exists := c.Get("userId")
+// **Get Maintenance History by Worker ID**
+func (ctrl *MaintenanceController) GetMaintenancesByWorkerID(c *gin.Context) {
+	workerID, exists := c.Get("userId")
 	if !exists {
-		c.JSON(http.StatusBadRequest, util.NewFailedResponse("User ID not found in context"))
+		c.JSON(http.StatusBadRequest, util.NewFailedResponse("Worker ID not found in context"))
 		return
 	}
 
-	maintenances, err := ctrl.maintenanceService.GetMaintenancesByUserID(userID.(int))
+	maintenances, err := ctrl.maintenanceService.GetMaintenancesByWorkerID(workerID.(int))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to fetch maintenances"))
 		return

@@ -21,13 +21,19 @@ func main() {
 	assetCategoryRepo := repository.NewAssetCategoryRepository(config.DB)
 	assetRepo := repository.NewAssetRepository(config.DB)
 	maintenanceRepo := repository.NewMaintenanceRepository(config.DB)
+	maintenanceRequestRepo := repository.NewMaintenanceRequestRepository(config.DB)
+	borrowRequestRepo := repository.NewBorrowAssetRequestRepository(config.DB)
+	borrowedAssetRepo := repository.NewBorrowedAssetRepository(config.DB)
 
 	userService := service.NewUserService(userRepo, roleRepo)
 	roleService := service.NewRoleService(roleRepo)
 	assetService := service.NewAssetService(assetRepo, assetCategoryRepo, maintenanceRepo)
 	assetCategoryService := service.NewAssetCategoryService(assetCategoryRepo)
 	statusService := service.NewStatusService(statusRepo)
-	maintenanceService := service.NewMaintenanceService(maintenanceRepo, assetRepo)
+	maintenanceService := service.NewMaintenanceService(maintenanceRepo, assetRepo, maintenanceRequestRepo)
+	maintenanceRequestService := service.NewMaintenanceRequestService(maintenanceRequestRepo, assetRepo, maintenanceRepo, userRepo)
+	borrowRequestService := service.NewBorrowAssetRequestService(borrowRequestRepo, borrowedAssetRepo, assetRepo)
+	borrowedAssetService := service.NewBorrowedAssetService(borrowedAssetRepo, borrowRequestRepo, assetRepo)
 
 	userController := controller.NewUserController(userService)
 	roleController := controller.NewRoleController(roleService)
@@ -35,10 +41,26 @@ func main() {
 	assetCategoryController := controller.NewAssetCategoryController(assetCategoryService)
 	assetController := controller.NewAssetController(assetService)
 	maintenanceController := controller.NewMaintenanceController(maintenanceService)
+	maintenanceRequestController := controller.NewMaintenanceRequestController(maintenanceRequestService)
+	borrowRequestController := controller.NewBorrowAssetRequestController(borrowRequestService)
+	borrowedAssetController := controller.NewBorrowedAssetController(borrowedAssetService)
 
-	config.SetupRouter(r, roleController, userController, assetController, assetCategoryController, statusController, maintenanceController)
+	config.SetupRouter(
+		r,
+		roleController,
+		userController,
+		assetController,
+		assetCategoryController,
+		statusController,
+		maintenanceController,
+		maintenanceRequestController,
+		borrowRequestController,
+		borrowedAssetController,
+	)
+
 	r.Use(middleware.LoggerMiddleware())
 	r.Use(middleware.RecoveryMiddleware())
+
 	err := r.Run(":8080")
 	if err != nil {
 		log.Fatalln(err)

@@ -7,8 +7,6 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtSecret = []byte("your_secret_key") //SEMENTARA DISINI DLU
-
 type JWTClaims struct {
 	UserID int `json:"userId"`
 	Role   int `json:"roleId"`
@@ -48,3 +46,5 @@ func ValidateToken(tokenString string) (*JWTClaims, error) {
 
 	return claims, nil
 }
+
+var jwtSecret = []byte("your_secret_key") //SEMENTARA DISINI DLU

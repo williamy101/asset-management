@@ -16,6 +16,7 @@ type MaintenanceRepository interface {
 	GetTotalCostByAssetID(assetID int) (map[string]interface{}, error)
 	FindByUserID(userID int) ([]entity.Maintenances, error)
 	FindByAssetID(assetID int) ([]entity.Maintenances, error)
+	FindActiveByAssetID(assetID int) (*entity.Maintenances, error)
 }
 
 type maintenanceRepository struct {
@@ -37,14 +38,11 @@ func (r *maintenanceRepository) FindAll() ([]entity.Maintenances, error) {
 		Preload("Assets.AssetCategories").
 		Preload("Assets.Statuses").
 		Preload("Users").
-		Preload("Users.Roles").
 		Preload("Statuses").
 		Find(&maintenances).Error
-	if err != nil {
-		return nil, err
-	}
-	return maintenances, nil
+	return maintenances, err
 }
+
 func (r *maintenanceRepository) FindByID(maintenanceID int) (*entity.Maintenances, error) {
 	var maintenance entity.Maintenances
 	err := r.db.
@@ -52,14 +50,10 @@ func (r *maintenanceRepository) FindByID(maintenanceID int) (*entity.Maintenance
 		Preload("Assets.AssetCategories").
 		Preload("Assets.Statuses").
 		Preload("Users").
-		Preload("Users.Roles").
 		Preload("Statuses").
 		Where("maintenance_id = ?", maintenanceID).
-		Find(&maintenance).Error
-	if err != nil {
-		return nil, err
-	}
-	return &maintenance, nil
+		First(&maintenance).Error
+	return &maintenance, err
 }
 
 func (r *maintenanceRepository) Update(maintenance *entity.Maintenances) error {
@@ -73,10 +67,7 @@ func (r *maintenanceRepository) Delete(maintenanceID int) error {
 func (r *maintenanceRepository) CalculateTotalCost() (float64, error) {
 	var totalCost float64
 	err := r.db.Model(&entity.Maintenances{}).Select("SUM(cost)").Scan(&totalCost).Error
-	if err != nil {
-		return 0, err
-	}
-	return totalCost, nil
+	return totalCost, err
 }
 
 func (r *maintenanceRepository) GetTotalCostByAssetID(assetID int) (map[string]interface{}, error) {
@@ -108,26 +99,37 @@ func (r *maintenanceRepository) GetTotalCostByAssetID(assetID int) (map[string]i
 
 func (r *maintenanceRepository) FindByUserID(userID int) ([]entity.Maintenances, error) {
 	var maintenances []entity.Maintenances
-	err := r.db.Preload("Assets").Preload("Assets.AssetCategories").Preload("Assets.Statuses").
-		Preload("Users").Preload("Users.Roles").
+	err := r.db.
+		Preload("Assets").
+		Preload("Assets.AssetCategories").
+		Preload("Assets.Statuses").
+		Preload("Users").
 		Preload("Statuses").
-		Where("user_id = ?", userID).
+		Where("worker = ?", userID).
 		Find(&maintenances).Error
-	if err != nil {
-		return nil, err
-	}
-	return maintenances, nil
+	return maintenances, err
 }
 
 func (r *maintenanceRepository) FindByAssetID(assetID int) ([]entity.Maintenances, error) {
 	var maintenances []entity.Maintenances
-	err := r.db.Preload("Assets").Preload("Assets.AssetCategories").Preload("Assets.Statuses").
-		Preload("Users").Preload("Users.Roles").
+	err := r.db.
+		Preload("Assets").
+		Preload("Assets.AssetCategories").
+		Preload("Assets.Statuses").
+		Preload("Users").
 		Preload("Statuses").
 		Where("asset_id = ?", assetID).
 		Find(&maintenances).Error
+	return maintenances, err
+}
+
+func (r *maintenanceRepository) FindActiveByAssetID(assetID int) (*entity.Maintenances, error) {
+	var maintenance entity.Maintenances
+	err := r.db.
+		Where("asset_id = ? AND status_id = 3", assetID). // Status 3 = In Progress
+		First(&maintenance).Error
 	if err != nil {
 		return nil, err
 	}
-	return maintenances, nil
+	return &maintenance, nil
 }

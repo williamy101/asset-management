@@ -20,8 +20,9 @@ func NewAssetController(assetService service.AssetService) *AssetController {
 func (ctrl *AssetController) CreateAsset(c *gin.Context) {
 	var input struct {
 		AssetName       string `json:"assetName" binding:"required"`
-		CategoryID      int    `json:"categoryID" binding:"required"`
+		CategoryID      *int   `json:"categoryID"`
 		StatusID        int    `json:"statusId" binding:"required"`
+		UserID          *int   `json:"userId"`
 		LastMaintenance string `json:"lastMaintenance"`
 		NextMaintenance string `json:"nextMaintenance"`
 	}
@@ -31,9 +32,9 @@ func (ctrl *AssetController) CreateAsset(c *gin.Context) {
 		return
 	}
 
-	err := ctrl.assetService.CreateAsset(input.AssetName, input.CategoryID, input.StatusID, input.LastMaintenance, input.NextMaintenance)
+	err := ctrl.assetService.CreateAsset(input.AssetName, input.CategoryID, input.StatusID, input.UserID, input.LastMaintenance, input.NextMaintenance)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to create asset"))
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse(err.Error()))
 		return
 	}
 
@@ -73,11 +74,12 @@ func (ctrl *AssetController) UpdateAsset(c *gin.Context) {
 	}
 
 	var input struct {
-		AssetName       string `json:"assetName" binding:"required"`
-		CategoryID      int    `json:"categoryID" binding:"required"`
-		StatusID        int    `json:"statusId" binding:"required"`
-		LastMaintenance string `json:"lastMaintenance" binding:"required"`
-		NextMaintenance string `json:"nextMaintenance" binding:"required"`
+		AssetName       string `json:"assetName"`
+		CategoryID      *int   `json:"categoryID"`
+		StatusID        int    `json:"statusId"`
+		UserID          *int   `json:"userId"`
+		LastMaintenance string `json:"lastMaintenance"`
+		NextMaintenance string `json:"nextMaintenance"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -85,9 +87,9 @@ func (ctrl *AssetController) UpdateAsset(c *gin.Context) {
 		return
 	}
 
-	err = ctrl.assetService.UpdateAsset(id, input.AssetName, input.CategoryID, input.StatusID, input.LastMaintenance, input.NextMaintenance)
+	err = ctrl.assetService.UpdateAsset(id, input.AssetName, input.CategoryID, input.StatusID, input.UserID, input.LastMaintenance, input.NextMaintenance)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to update asset"))
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse(err.Error()))
 		return
 	}
 
@@ -103,7 +105,7 @@ func (ctrl *AssetController) DeleteAsset(c *gin.Context) {
 
 	err = ctrl.assetService.DeleteAsset(id)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to delete asset"))
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse(err.Error()))
 		return
 	}
 
