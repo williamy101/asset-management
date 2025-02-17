@@ -1,4 +1,5 @@
 # Asset Management API
+### Sistem backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis role, dan manajemen pengguna.
 
 ***Terdapat fitur transaksi baru yang belum dilakukan testing yaitu***:
  - Request pinjam aset (user create request pinjam aset, admin bisa approve atau reject)
@@ -18,7 +19,7 @@
 (Link: https://www.canva.com/design/DAGcmM3nHpE/RlvXGsFwEORdt432r6Bd3A/edit?utm_content=DAGcmM3nHpE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 
- ### Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis role, dan manajemen pengguna.
+
 
 ## Fitur
 
