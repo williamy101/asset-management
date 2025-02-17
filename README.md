@@ -20,7 +20,7 @@
 
 
 ## Testing
-Pengujian dan dokumentasi dilakukan menggunakan Postman berikut ini adalah linknya:
+Pengujian dan dokumentasi dilakukan menggunakan Postman, berikut adalah linknya:
 https://universal-desert-823258-1.postman.co/workspace/Asset-Management~d0881856-648f-4073-99bc-54a043912a33/collection/26349837-64b9586a-fdb5-4ec5-8a5b-900f407813dc?action=share&creator=26349837
 
 ## Fitur
