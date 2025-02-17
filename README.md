@@ -5,7 +5,7 @@
  - Tabel penyimpanan aset yang dipinjam
  - Request maintenance (request dibuat oleh user, admin bisa approve atau reject, create maintenance manual tetap ada untuk maintenance rutin)
  
- ### _Langkah selanjutnya: testing dan dokumentasi fitur baru, integrasi project ke docker, lalu deployment ke cloud hosting_
+<sub>_Langkah selanjutnya: testing dan dokumentasi fitur baru, integrasi project ke docker, lalu deployment ke cloud hosting_ </sub>
 
 ## Preview ERD 
 ![image](https://github.com/user-attachments/assets/a98a8631-191a-477c-adb1-9b6673eee1a6)
