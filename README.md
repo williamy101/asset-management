@@ -1,7 +1,7 @@
 # Asset Management API
 ### Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis role, dan manajemen pengguna.
 
-###**3 Fungsi Untested:
+### **3 Fungsi Untested:**
 - maintenance request: User dapat create request maintenance aset tertentu, admin dapat approve atau reject, jika approve admin dapat menginput teknisi yang mengerjakan dll untuk membuat jadwal maintenance
 - borrow asset request: User dapat request pinjam aset, admin dapat approve atau reject, jika approve maka akan terdata di tabel borrowed asset, dan aset tersebut terbind oleh userID
 - borrowed asset: Tabel baru yang menyimpan data aset yang sedang dipinjam user
