@@ -1,16 +1,27 @@
 # Asset Management API
+### Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis role, dan manajemen pengguna.
+
+###**3 Fungsi Untested:
+- maintenance request: User dapat create request maintenance aset tertentu, admin dapat approve atau reject, jika approve admin dapat menginput teknisi yang mengerjakan dll untuk membuat jadwal maintenance
+- borrow asset request: User dapat request pinjam aset, admin dapat approve atau reject, jika approve maka akan terdata di tabel borrowed asset, dan aset tersebut terbind oleh userID
+- borrowed asset: Tabel baru yang menyimpan data aset yang sedang dipinjam user
+
+_In Progress & Coming Soon:_ Testing dan dokumentasi fitur baru menggunakan Postman, Integrasi Docker, Deployment ke cloud hosting Google.
+
+>Link Postman: https://universal-desert-823258-1.postman.co/workspace/Asset-Management~d0881856-648f-4073-99bc-54a043912a33/collection/26349837-64b9586a-fdb5-4ec5-8a5b-900f407813dc?action=share&creator=26349837
 
 ## Preview ERD 
-![image](https://github.com/user-attachments/assets/a5243dbf-b45c-49ad-a926-0ce5697b3ab2)
+![image](https://github.com/user-attachments/assets/8d4f2a99-7b63-4f16-8ffc-b04be0ef8c0b)
+
 *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
 (Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)
 
 ## Slide Presentasi 
 ## ![image](https://github.com/user-attachments/assets/876e6272-ddb8-4e9a-b5dd-ab4a1c88d037)
-(Link: https://www.canva.com/design/DAGcmM3nHpE/RlvXGsFwEORdt432r6Bd3A/edit?utm_content=DAGcmM3nHpE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+>Link: https://www.canva.com/design/DAGcmM3nHpE/RlvXGsFwEORdt432r6Bd3A/edit?utm_content=DAGcmM3nHpE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 
 
- ### Aplikasi backend untuk mengelola aset, termasuk operasi CRUD, kontrol akses berbasis role, dan manajemen pengguna.
+
 
 ## Fitur
 
