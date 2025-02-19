@@ -11,7 +11,7 @@ _In Progress & Coming Soon:_ Testing dan dokumentasi fitur baru menggunakan Post
 >Link Postman: https://universal-desert-823258-1.postman.co/workspace/Asset-Management~d0881856-648f-4073-99bc-54a043912a33/collection/26349837-64b9586a-fdb5-4ec5-8a5b-900f407813dc?action=share&creator=26349837
 
 ## Preview ERD 
-![image](https://github.com/user-attachments/assets/8d4f2a99-7b63-4f16-8ffc-b04be0ef8c0b)
+![image](https://github.com/user-attachments/assets/936fd75a-4908-4bf6-a3dd-8dd22e25301c)
 
 *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
 
