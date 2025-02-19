@@ -14,7 +14,8 @@ _In Progress & Coming Soon:_ Testing dan dokumentasi fitur baru menggunakan Post
 ![image](https://github.com/user-attachments/assets/8d4f2a99-7b63-4f16-8ffc-b04be0ef8c0b)
 
 *Note: Untuk melihat rancangan database lebih jelasnya di branch main*
-(Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)
+
+>Link: https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e
 
 ## Slide Presentasi 
 ## ![image](https://github.com/user-attachments/assets/876e6272-ddb8-4e9a-b5dd-ab4a1c88d037)
