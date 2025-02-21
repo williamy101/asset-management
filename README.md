@@ -6,7 +6,7 @@
 - borrow asset request: User dapat request pinjam aset, admin dapat approve atau reject, jika approve maka akan terdata di tabel borrowed asset, dan aset tersebut terbind oleh userID
 - borrowed asset: Tabel baru yang menyimpan data aset yang sedang dipinjam user
 
-_In Progress & Coming Soon:_ Testing dan dokumentasi fitur baru menggunakan Postman, Integrasi Docker, Deployment ke cloud hosting Google.
+_In Progress & Coming Soon:_ Testing dan dokumentasi fitur baru menggunakan Postman, Integrasi Docker, Deployment ke cloud hosting Google. Integrasi Redis untuk Notification, Rate Limiting, Session Storage. 
 
 >Link Postman: https://universal-desert-823258-1.postman.co/workspace/Asset-Management~d0881856-648f-4073-99bc-54a043912a33/collection/26349837-64b9586a-fdb5-4ec5-8a5b-900f407813dc?action=share&creator=26349837
 
