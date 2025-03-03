@@ -48,7 +48,7 @@ func (s *userService) RegisterUser(name, email, password string) error {
 		Name:     name,
 		Email:    email,
 		Password: string(hashedPassword),
-		RoleID:   2,
+		RoleID:   3,
 	}
 
 	err = s.userRepo.Create(user)

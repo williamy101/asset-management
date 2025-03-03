@@ -143,7 +143,7 @@ func (s *maintenanceRequestService) ApproveMaintenanceRequest(
 		Worker:      worker,
 		Description: description,
 		Cost:        cost,
-		StatusID:    3, // Status "In Maintenance"
+		StatusID:    4, // Status "Scheduled"
 	}
 
 	if err := s.maintenanceRepo.Create(maintenance); err != nil {

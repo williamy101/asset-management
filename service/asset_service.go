@@ -4,16 +4,15 @@ import (
 	"errors"
 	"go-asset-management/entity"
 	"go-asset-management/repository"
-	"go-asset-management/util"
 
 	"gorm.io/gorm"
 )
 
 type AssetService interface {
-	CreateAsset(assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error
+	CreateAsset(assetName string, categoryID *int, statusID int, userID *int) error
 	GetAllAssets() ([]entity.Assets, error)
 	GetAssetByID(assetID int) (*entity.Assets, error)
-	UpdateAsset(assetID int, assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error
+	UpdateAsset(assetID int, assetName *string, categoryID *int, statusID *int, userID *int) error
 	DeleteAsset(assetID int) error
 }
 
@@ -25,21 +24,20 @@ type assetService struct {
 
 func NewAssetService(assetRepo repository.AssetRepository, assetCategoryRepo repository.AssetCategoryRepository, maintenanceRepo repository.MaintenanceRepository) AssetService {
 	return &assetService{assetRepo: assetRepo, assetCategoryRepo: assetCategoryRepo, maintenanceRepo: maintenanceRepo}
-
 }
 
-func (s *assetService) CreateAsset(assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error {
+func (s *assetService) CreateAsset(assetName string, categoryID *int, statusID int, userID *int) error {
 	if assetName == "" {
 		return errors.New("asset name cannot be empty")
 	}
 
 	// validasi status
 	validStatuses := map[int]bool{1: true, 2: true, 3: true}
-
 	if !validStatuses[statusID] {
 		return errors.New("invalid status ID")
 	}
 
+	// userID hanya boleh diisi jika status adalah "In Use"
 	if userID != nil && statusID != 2 {
 		return errors.New("user can only be assigned when asset is 'In Use'")
 	}
@@ -56,12 +54,12 @@ func (s *assetService) CreateAsset(assetName string, categoryID *int, statusID i
 	}
 
 	asset := &entity.Assets{
-		AssetName:       assetName,
-		CategoryID:      categoryID,
-		StatusID:        statusID,
-		LastMaintenance: nil,
-		NextMaintenance: nil,
+		AssetName:  assetName,
+		CategoryID: categoryID,
+		StatusID:   statusID,
+		UserID:     nil, // default userID ke NULL
 	}
+
 	return s.assetRepo.Create(asset)
 }
 
@@ -73,7 +71,7 @@ func (s *assetService) GetAssetByID(assetID int) (*entity.Assets, error) {
 	return s.assetRepo.FindByID(assetID)
 }
 
-func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID *int, statusID int, userID *int, lastMaintenance, nextMaintenance string) error {
+func (s *assetService) UpdateAsset(assetID int, assetName *string, categoryID *int, statusID *int, userID *int) error {
 	// Check apakah aset ada
 	asset, err := s.assetRepo.FindByID(assetID)
 	if err != nil {
@@ -83,8 +81,9 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID *in
 		return err
 	}
 
-	if assetName != "" {
-		asset.AssetName = assetName
+	// Update hanya jika field dikirim
+	if assetName != nil {
+		asset.AssetName = *assetName
 	}
 
 	if categoryID != nil {
@@ -98,41 +97,23 @@ func (s *assetService) UpdateAsset(assetID int, assetName string, categoryID *in
 		asset.CategoryID = categoryID
 	}
 
-	validStatuses := map[int]bool{1: true, 2: true, 3: true, 13: true}
+	if statusID != nil {
+		validStatuses := map[int]bool{1: true, 2: true, 3: true}
+		if !validStatuses[*statusID] {
+			return errors.New("invalid status ID")
+		}
+		asset.StatusID = *statusID
 
-	if !validStatuses[statusID] {
-		return errors.New("invalid status ID")
-	}
-	asset.StatusID = statusID
-
-	if statusID == 13 {
-		return errors.New("asset status cannot be manually set to 'Borrowed'")
+		// userID hanya bisa diisi jika status adalah "In Use"
+		if *statusID == 2 && userID == nil {
+			return errors.New("user ID is required when asset is 'In Use'")
+		}
 	}
 
 	if userID != nil {
-		if statusID != 2 {
-			return errors.New("user can only be assigned when asset is 'In Use'")
-		}
 		asset.UserID = userID
-	} else if statusID == 1 {
-		asset.UserID = nil
-	}
-
-	// Parse date
-	if lastMaintenance != "" {
-		parsedLastMaintenance, err := util.ParseDate(lastMaintenance)
-		if err != nil {
-			return errors.New("invalid last maintenance date")
-		}
-		asset.LastMaintenance = parsedLastMaintenance
-	}
-
-	if nextMaintenance != "" {
-		parsedNextMaintenance, err := util.ParseDate(nextMaintenance)
-		if err != nil {
-			return errors.New("invalid next maintenance date")
-		}
-		asset.NextMaintenance = parsedNextMaintenance
+	} else if statusID != nil && *statusID == 1 {
+		asset.UserID = nil // Hapus user jika status jadi "Available"
 	}
 
 	return s.assetRepo.Update(asset)

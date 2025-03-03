@@ -19,12 +19,9 @@ func NewAssetController(assetService service.AssetService) *AssetController {
 
 func (ctrl *AssetController) CreateAsset(c *gin.Context) {
 	var input struct {
-		AssetName       string `json:"assetName" binding:"required"`
-		CategoryID      *int   `json:"categoryID"`
-		StatusID        int    `json:"statusId" binding:"required"`
-		UserID          *int   `json:"userId"`
-		LastMaintenance string `json:"lastMaintenance"`
-		NextMaintenance string `json:"nextMaintenance"`
+		AssetName  string `json:"assetName" binding:"required"`
+		CategoryID *int   `json:"categoryID"`
+		StatusID   int    `json:"statusId" binding:"required"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -32,7 +29,7 @@ func (ctrl *AssetController) CreateAsset(c *gin.Context) {
 		return
 	}
 
-	err := ctrl.assetService.CreateAsset(input.AssetName, input.CategoryID, input.StatusID, input.UserID, input.LastMaintenance, input.NextMaintenance)
+	err := ctrl.assetService.CreateAsset(input.AssetName, input.CategoryID, input.StatusID, nil)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse(err.Error()))
 		return
@@ -74,12 +71,10 @@ func (ctrl *AssetController) UpdateAsset(c *gin.Context) {
 	}
 
 	var input struct {
-		AssetName       string `json:"assetName"`
-		CategoryID      *int   `json:"categoryID"`
-		StatusID        int    `json:"statusId"`
-		UserID          *int   `json:"userId"`
-		LastMaintenance string `json:"lastMaintenance"`
-		NextMaintenance string `json:"nextMaintenance"`
+		AssetName  *string `json:"assetName"`
+		CategoryID *int    `json:"categoryID"`
+		StatusID   *int    `json:"statusId"`
+		UserID     *int    `json:"userId"`
 	}
 
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -87,7 +82,7 @@ func (ctrl *AssetController) UpdateAsset(c *gin.Context) {
 		return
 	}
 
-	err = ctrl.assetService.UpdateAsset(id, input.AssetName, input.CategoryID, input.StatusID, input.UserID, input.LastMaintenance, input.NextMaintenance)
+	err = ctrl.assetService.UpdateAsset(id, input.AssetName, input.CategoryID, input.StatusID, input.UserID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse(err.Error()))
 		return

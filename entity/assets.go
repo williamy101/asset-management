@@ -9,7 +9,6 @@ type Assets struct {
 	StatusID        int              `gorm:"not null" json:"statusId"`
 	UserID          *int             `json:"userId"`
 	LastMaintenance *time.Time       `gorm:"type:date" json:"lastMaintenance"`
-	NextMaintenance *time.Time       `gorm:"type:date" json:"nextMaintenance"`
 	CreatedAt       time.Time        `gorm:"autoCreateTime" json:"createdAt"`
 	UpdatedAt       time.Time        `gorm:"autoUpdateTime" json:"updatedAt"`
 	AssetCategories *AssetCategories `gorm:"foreignKey:CategoryID;references:CategoryID" json:"assetCategories"`
