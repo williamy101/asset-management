@@ -97,7 +97,8 @@ func SetupRouter(
 
 	technicianMaintenanceRouter := router.Group("/maintenances/technician", middleware.AuthMiddleware(2))
 	{
-		technicianMaintenanceRouter.PUT("/:id", maintenanceController.UpdateMaintenance)
+		technicianMaintenanceRouter.PUT("/:id/start", maintenanceController.StartMaintenance)
+		technicianMaintenanceRouter.PUT("/:id/end", maintenanceController.EndMaintenance)
 	}
 
 	userMaintenanceRouter := router.Group("/maintenances/user", middleware.AuthMiddleware(2, 3))
