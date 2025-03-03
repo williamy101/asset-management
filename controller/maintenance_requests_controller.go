@@ -20,7 +20,6 @@ func NewMaintenanceRequestController(maintenanceRequestService service.Maintenan
 	return &MaintenanceRequestController{maintenanceRequestService: maintenanceRequestService}
 }
 
-// **Create a new maintenance request**
 func (ctrl *MaintenanceRequestController) CreateMaintenanceRequest(c *gin.Context) {
 	var input struct {
 		AssetID          int    `json:"assetId" binding:"required"`
@@ -32,7 +31,6 @@ func (ctrl *MaintenanceRequestController) CreateMaintenanceRequest(c *gin.Contex
 		return
 	}
 
-	// Get user ID from context (assumed to be set by authentication middleware)
 	userID, exists := c.Get("userId")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, util.NewFailedResponse("Unauthorized"))
@@ -48,7 +46,6 @@ func (ctrl *MaintenanceRequestController) CreateMaintenanceRequest(c *gin.Contex
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance request created successfully", nil))
 }
 
-// **Get all maintenance requests**
 func (ctrl *MaintenanceRequestController) GetAllMaintenanceRequests(c *gin.Context) {
 	requests, err := ctrl.maintenanceRequestService.GetAllMaintenanceRequests()
 	if err != nil {
@@ -58,7 +55,6 @@ func (ctrl *MaintenanceRequestController) GetAllMaintenanceRequests(c *gin.Conte
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance requests fetched successfully", requests))
 }
 
-// **Get a maintenance request by ID**
 func (ctrl *MaintenanceRequestController) GetMaintenanceRequestByID(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -79,7 +75,6 @@ func (ctrl *MaintenanceRequestController) GetMaintenanceRequestByID(c *gin.Conte
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance request fetched successfully", request))
 }
 
-// **Get maintenance requests made by a specific user**
 func (ctrl *MaintenanceRequestController) GetMaintenanceRequestsByUserID(c *gin.Context) {
 	userID, exists := c.Get("userId")
 	if !exists {
@@ -96,7 +91,6 @@ func (ctrl *MaintenanceRequestController) GetMaintenanceRequestsByUserID(c *gin.
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance requests fetched successfully", requests))
 }
 
-// **Get maintenance requests related to a specific asset**
 func (ctrl *MaintenanceRequestController) GetMaintenanceRequestsByAssetID(c *gin.Context) {
 	assetID, err := strconv.Atoi(c.Param("assetId"))
 	if err != nil {
@@ -113,7 +107,6 @@ func (ctrl *MaintenanceRequestController) GetMaintenanceRequestsByAssetID(c *gin
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance requests fetched successfully", requests))
 }
 
-// **Get maintenance requests filtered by status**
 func (ctrl *MaintenanceRequestController) GetMaintenanceRequestsByStatus(c *gin.Context) {
 	statusID, err := strconv.Atoi(c.Param("statusId"))
 	if err != nil {
@@ -166,7 +159,6 @@ func (ctrl *MaintenanceRequestController) ApproveMaintenanceRequest(c *gin.Conte
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance request approved and maintenance created", nil))
 }
 
-// **Reject a maintenance request**
 func (ctrl *MaintenanceRequestController) RejectMaintenanceRequest(c *gin.Context) {
 	requestID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -183,7 +175,6 @@ func (ctrl *MaintenanceRequestController) RejectMaintenanceRequest(c *gin.Contex
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Maintenance request rejected successfully", nil))
 }
 
-// **Delete a maintenance request**
 func (ctrl *MaintenanceRequestController) DeleteMaintenanceRequest(c *gin.Context) {
 	requestID, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
