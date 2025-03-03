@@ -2,7 +2,7 @@
 # **Asset Management API**
 
 ## **Preview ERD**  
-**![image](https://github.com/user-attachments/assets/2bda7a98-e782-4cbd-84b5-fa80f15dce49)
+![image](https://github.com/user-attachments/assets/2bda7a98-e782-4cbd-84b5-fa80f15dce49)
 🔗 **[Lihat ERD lebih jelas](https://dbdiagram.io/d/ERD-Asset-Management-676dac255406798ef7b59c4e)**  
 
 ## **Slide Presentasi**  
@@ -14,7 +14,7 @@ Aplikasi backend untuk mengelola aset, mencakup operasi CRUD, kontrol akses berb
 
 ---
 
-## **📌 Fitur Utama**
+## **Fitur Utama**
 ✅ **Manajemen Aset**  
 - CRUD untuk aset, kategori, dan status.  
 - Penyimpanan informasi pemeliharaan aset.  
@@ -79,7 +79,7 @@ Aplikasi backend untuk mengelola aset, mencakup operasi CRUD, kontrol akses berb
 | `/borrowed-assets/:id` | `GET` | User (3) | Mendapatkan detail aset yang sedang dipinjam berdasarkan ID. |
 | `/borrowed-assets/:id/return` | `PUT` | User (3) | Memperbarui tanggal pengembalian aset yang dipinjam. |
 
-## ** Hak Akses (Authorization)**
+## **Hak Akses (Authorization)**
 | **Role** | **Level** | **Keterangan** |
 |----------|---------|----------------|
 | **Admin** | `1` | Memiliki akses penuh untuk CRUD aset, status, kategori, pengguna, dan perawatan. |
@@ -98,7 +98,7 @@ Aplikasi backend untuk mengelola aset, mencakup operasi CRUD, kontrol akses berb
 
 ---
 
-## **🛠️ Stack Teknologi**
+## **Stack Teknologi**
 - **Go (Golang)** → Bahasa pemrograman backend.  
 - **Gin-Gonic** → Web framework untuk Golang.  
 - **GORM** → ORM untuk manajemen database.  
@@ -107,7 +107,7 @@ Aplikasi backend untuk mengelola aset, mencakup operasi CRUD, kontrol akses berb
 
 ---
 
-## **🚀 Cara Menjalankan Project**
+## **Cara Menjalankan Project**
 ```sh
 # Clone repository
 git clone https://github.com/williamy101/asset-management.git
