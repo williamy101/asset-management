@@ -47,7 +47,7 @@ func (r *maintenanceRequestRepository) FindByID(requestID int) (*entity.Maintena
 		Preload("Assets").
 		Preload("Users").
 		Preload("Statuses").
-		Where("request_id = ?", requestID).
+		Where("maintenance_request_id = ?", requestID).
 		First(&request).Error
 	return &request, err
 }
@@ -99,7 +99,7 @@ func (r *maintenanceRequestRepository) Update(request *entity.MaintenanceRequest
 
 func (r *maintenanceRequestRepository) UpdateStatus(requestID int, statusID int) error {
 	return r.db.Model(&entity.MaintenanceRequests{}).
-		Where("request_id = ?", requestID).
+		Where("maintenance_request_id = ?", requestID).
 		Update("status_id", statusID).Error
 }
 

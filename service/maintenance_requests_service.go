@@ -57,6 +57,17 @@ func (s *maintenanceRequestService) CreateMaintenanceRequest(assetID int, userID
 		return err
 	}
 
+	existingRequests, err := s.maintenanceRequestRepo.FindByAssetID(assetID)
+	if err != nil {
+		return err
+	}
+
+	for _, req := range existingRequests {
+		if req.StatusID == 7 || req.StatusID == 8 {
+			return errors.New("maintenance request already exists or approved for this asset, wait until it is completed or rejected")
+		}
+	}
+
 	request := &entity.MaintenanceRequests{
 		AssetID:          assetID,
 		UserID:           userID,

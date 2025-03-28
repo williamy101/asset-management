@@ -39,7 +39,23 @@ func (ctrl *AssetController) CreateAsset(c *gin.Context) {
 }
 
 func (ctrl *AssetController) GetAllAssets(c *gin.Context) {
-	assets, err := ctrl.assetService.GetAllAssets()
+
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid page number"))
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 {
+		c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid limit number"))
+		return
+	}
+
+	assets, err := ctrl.assetService.GetAllAssetsPaginated(page, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to fetch assets"))
 		return
@@ -105,4 +121,33 @@ func (ctrl *AssetController) DeleteAsset(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, util.NewSuccessResponse("Asset deleted successfully", nil))
+}
+
+func (ctrl *AssetController) FilterAssets(c *gin.Context) {
+	name := c.Query("name")
+	category := c.Query("category")
+	status := c.Query("status")
+
+	pageStr := c.DefaultQuery("page", "1")
+	limitStr := c.DefaultQuery("limit", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page < 1 {
+		c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid page number"))
+		return
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil || limit < 1 {
+		c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid limit number"))
+		return
+	}
+
+	assets, err := ctrl.assetService.FilterAssetsPaginated(name, category, status, page, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to filter assets"))
+		return
+	}
+
+	c.JSON(http.StatusOK, util.NewSuccessResponse("Filtered assets fetched successfully", assets))
 }

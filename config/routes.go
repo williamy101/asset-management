@@ -32,6 +32,7 @@ func SetupRouter(
 		adminUserRouter.GET("/", userController.GetAllUsers)
 		adminUserRouter.GET("/:id", userController.GetUserByID)
 		adminUserRouter.PUT("/role", userController.UpdateUserRole)
+		adminUserRouter.GET("/filter", userController.FilterUsers)
 	}
 
 	roleRouter := router.Group("/roles")
@@ -76,6 +77,7 @@ func SetupRouter(
 		assetRouter.GET("/:id", assetController.GetAssetByID)
 		assetRouter.PUT("/:id", assetController.UpdateAsset)
 		assetRouter.DELETE("/:id", assetController.DeleteAsset)
+		assetRouter.GET("/filter", assetController.FilterAssets)
 	}
 
 	userAssetRouter := router.Group("/assets/get")
@@ -115,6 +117,7 @@ func SetupRouter(
 	adminMaintenanceRequestRouter := router.Group("/maintenance-requests/admin")
 	adminMaintenanceRequestRouter.Use(middleware.AuthMiddleware(1))
 	{
+		adminMaintenanceRequestRouter.GET("/", maintenanceRequestController.GetAllMaintenanceRequests)
 		adminMaintenanceRequestRouter.PUT("/:id/approve", maintenanceRequestController.ApproveMaintenanceRequest)
 		adminMaintenanceRequestRouter.PUT("/:id/reject", maintenanceRequestController.RejectMaintenanceRequest)
 	}
@@ -123,17 +126,20 @@ func SetupRouter(
 	borrowRequestRouter.Use(middleware.AuthMiddleware(3))
 	{
 		borrowRequestRouter.POST("/", borrowRequestController.CreateBorrowRequest)
+		borrowRequestRouter.GET("/", borrowRequestController.GetBorrowRequestsByUserID)
 	}
 
 	adminBorrowRequestRouter := router.Group("/borrow-requests/admin")
 	adminBorrowRequestRouter.Use(middleware.AuthMiddleware(1))
 	{
+		adminBorrowRequestRouter.GET("/", borrowRequestController.GetAllBorrowRequests)
+		adminBorrowRequestRouter.GET("/:id", borrowRequestController.GetBorrowRequestByID)
 		adminBorrowRequestRouter.PUT("/:id/approve", borrowRequestController.ApproveBorrowRequest)
 		adminBorrowRequestRouter.PUT("/:id/reject", borrowRequestController.RejectBorrowRequest)
 	}
 
 	borrowedAssetRouter := router.Group("/borrowed-assets")
-	borrowedAssetRouter.Use(middleware.AuthMiddleware(3))
+	borrowedAssetRouter.Use(middleware.AuthMiddleware(1, 2, 3))
 	{
 		borrowedAssetRouter.GET("/", borrowedAssetController.GetAllBorrowedAssets)
 		borrowedAssetRouter.GET("/:id", borrowedAssetController.GetBorrowedAssetByID)

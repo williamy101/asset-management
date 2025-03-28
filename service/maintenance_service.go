@@ -112,6 +112,17 @@ func (s *maintenanceService) EndMaintenance(maintenanceID int, description strin
 	maintenance.Description = description
 	err = s.maintenanceRepo.Update(maintenance)
 
+	asset, err := s.assetRepo.FindByID(maintenance.AssetID)
+	if err != nil {
+		return nil, err
+	}
+
+	asset.StatusID = 1
+	err = s.assetRepo.Update(asset)
+	if err != nil {
+		return nil, err
+	}
+
 	if err != nil {
 		return nil, err
 	}

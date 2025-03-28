@@ -105,10 +105,11 @@ func (s *borrowAssetRequestService) ApproveBorrowRequest(requestID int, approved
 
 	now := time.Now()
 	borrowedAsset := &entity.BorrowedAssets{
-		AssetID:    request.AssetID,
-		UserID:     request.UserID,
-		BorrowDate: now,
-		StatusID:   13, // 13 = Borrowed
+		AssetID:         request.AssetID,
+		UserID:          request.UserID,
+		BorrowDate:      now,
+		StatusID:        13, // 13 = Borrowed
+		BorrowRequestID: request.BorrowRequestID,
 	}
 
 	if err := s.borrowedAssetRepo.Create(borrowedAsset); err != nil {

@@ -12,6 +12,7 @@ type UserRepository interface {
 	Create(user *entity.Users) error
 	FindAll() ([]entity.Users, error)
 	Update(user *entity.Users) error
+	FilterUsers(name, email string, roleID int) ([]entity.Users, error)
 }
 
 type userRepository struct {
@@ -59,4 +60,27 @@ func (r *userRepository) Update(user *entity.Users) error {
 		return result.Error
 	}
 	return nil
+}
+
+func (r *userRepository) FilterUsers(name, email string, roleID int) ([]entity.Users, error) {
+	var users []entity.Users
+	query := r.db.Preload("Roles")
+
+	if name != "" {
+		query = query.Where("name LIKE ?", "%"+name+"%")
+	}
+
+	if email != "" {
+		query = query.Where("email LIKE ?", "%"+email+"%")
+	}
+
+	if roleID != 0 {
+		query = query.Where("role_id = ?", roleID)
+	}
+
+	err := query.Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
 }

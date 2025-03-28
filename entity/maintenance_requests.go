@@ -3,7 +3,7 @@ package entity
 import "time"
 
 type MaintenanceRequests struct {
-	RequestID        int        `gorm:"primaryKey;autoIncrement" json:"requestId"`
+	RequestID        int        `gorm:"primaryKey;autoIncrement;column:maintenance_request_id" json:"requestId"`
 	AssetID          int        `gorm:"not null" json:"assetId"`
 	UserID           int        `gorm:"not null" json:"userId"`
 	RequestDate      time.Time  `gorm:"type:date;not null" json:"requestDate"`

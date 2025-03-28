@@ -14,6 +14,9 @@ type AssetService interface {
 	GetAssetByID(assetID int) (*entity.Assets, error)
 	UpdateAsset(assetID int, assetName *string, categoryID *int, statusID *int, userID *int) error
 	DeleteAsset(assetID int) error
+	FilterAssets(name, categoryName, statusName string) ([]entity.Assets, error)
+	GetAllAssetsPaginated(page, limit int) ([]entity.Assets, error)
+	FilterAssetsPaginated(name, categoryName, statusName string, page, limit int) ([]entity.Assets, error)
 }
 
 type assetService struct {
@@ -137,4 +140,18 @@ func (s *assetService) DeleteAsset(assetID int) error {
 	}
 
 	return s.assetRepo.Delete(assetID)
+}
+
+func (s *assetService) FilterAssets(name, categoryName, statusName string) ([]entity.Assets, error) {
+	return s.assetRepo.FilterAssets(name, categoryName, statusName)
+}
+
+func (s *assetService) GetAllAssetsPaginated(page, limit int) ([]entity.Assets, error) {
+	offset := (page - 1) * limit
+	return s.assetRepo.FindAllPaginated(offset, limit)
+}
+
+func (s *assetService) FilterAssetsPaginated(name, categoryName, statusName string, page, limit int) ([]entity.Assets, error) {
+	offset := (page - 1) * limit
+	return s.assetRepo.FilterAssetsPaginated(name, categoryName, statusName, offset, limit)
 }

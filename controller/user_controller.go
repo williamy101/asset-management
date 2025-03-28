@@ -118,3 +118,27 @@ func (ctrl *UserController) UpdateUserRole(c *gin.Context) {
 
 	c.JSON(http.StatusOK, util.NewSuccessResponse("User role updated successfully", nil))
 }
+
+func (ctrl *UserController) FilterUsers(c *gin.Context) {
+	name := c.Query("name")
+	email := c.Query("email")
+	roleIDStr := c.Query("roleId")
+
+	var roleID int
+	if roleIDStr != "" {
+		var err error
+		roleID, err = strconv.Atoi(roleIDStr)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, util.NewFailedResponse("Invalid role ID"))
+			return
+		}
+	}
+
+	usersDTO, err := ctrl.userService.FilterUsers(name, email, roleID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, util.NewFailedResponse("Failed to filter users"))
+		return
+	}
+
+	c.JSON(http.StatusOK, util.NewSuccessResponse("Filtered users fetched successfully", usersDTO))
+}

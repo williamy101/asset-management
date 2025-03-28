@@ -17,6 +17,7 @@ type UserService interface { //interface service user
 	GetUserByID(id int) (*entity.UserDTO, error)
 	GetAllUsers() ([]entity.UserDTO, error)
 	UpdateUserRole(userID int, newRoleID int) error
+	FilterUsers(name, email string, roleID int) ([]entity.UserDTO, error)
 }
 
 type userService struct { // struct user terhubung dengan repo user dan role
@@ -137,4 +138,22 @@ func (s *userService) UpdateUserRole(userID int, newRoleID int) error {
 
 	user.RoleID = newRoleID
 	return s.userRepo.Update(user)
+}
+
+func (s *userService) FilterUsers(name, email string, roleID int) ([]entity.UserDTO, error) {
+	users, err := s.userRepo.FilterUsers(name, email, roleID)
+	if err != nil {
+		return nil, err
+	}
+
+	var userDTOs []entity.UserDTO
+	for _, user := range users {
+		userDTOs = append(userDTOs, entity.UserDTO{
+			UserID: user.UserID,
+			Name:   user.Name,
+			RoleID: user.RoleID,
+		})
+	}
+
+	return userDTOs, nil
 }
